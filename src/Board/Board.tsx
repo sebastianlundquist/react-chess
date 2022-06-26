@@ -1,15 +1,9 @@
 import { Stack } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 import { useState } from 'react';
-import Piece, { ColorType, PieceType } from '../Pieces/Piece';
-import { getPieceType, getPieceColor } from '../Pieces/utils';
-import Tile from './Tile';
+import Column from './Column';
 
 const columnIds = Array(8).map(() => uuidv4());
-const tileIds = Array(64).map(() => uuidv4());
-
-const getColor = (column: number, row: number) =>
-	(column + row) % 2 === 0 ? 'black' : 'white';
 
 const initialState: Array<Array<string | undefined>> = [
 	[
@@ -99,21 +93,11 @@ const Board = () => {
 	return (
 		<Stack direction="row">
 			{boardState.map((column, columnIndex) => (
-				<Stack direction="column-reverse" key={columnIds[columnIndex]}>
-					{column.map((row, rowIndex) => (
-						<Tile
-							key={tileIds[columnIndex + rowIndex]}
-							color={getColor(columnIndex, rowIndex)}
-						>
-							{row && (
-								<Piece
-									type={getPieceType(row) as PieceType}
-									color={getPieceColor(row) as ColorType}
-								/>
-							)}
-						</Tile>
-					))}
-				</Stack>
+				<Column
+					column={column}
+					columnIndex={columnIndex}
+					key={columnIds[columnIndex]}
+				/>
 			))}
 		</Stack>
 	);
