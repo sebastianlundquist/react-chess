@@ -1,9 +1,9 @@
 import { Stack } from '@mui/material';
-import { v4 as uuidv4 } from 'uuid';
 import { useState } from 'react';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import Column from './Column';
 
-const columnIds = Array(8).map(() => uuidv4());
+const columnIds = [...Array(8).keys()].map((index) => `column-${index}`);
 
 const initialState: Array<Array<string | undefined>> = [
 	[
@@ -91,15 +91,25 @@ const initialState: Array<Array<string | undefined>> = [
 const Board = () => {
 	const [boardState] = useState(initialState);
 	return (
-		<Stack direction="row">
-			{boardState.map((column, columnIndex) => (
-				<Column
-					column={column}
-					columnIndex={columnIndex}
-					key={columnIds[columnIndex]}
-				/>
-			))}
-		</Stack>
+		<DragDropContext onDragEnd={() => console.log('Hej')}>
+			<Droppable droppableId="board">
+				{(provided, snapshot) => (
+					<Stack
+						ref={provided.innerRef}
+						{...provided.droppableProps}
+						direction="row"
+					>
+						{boardState.map((column, columnIndex) => (
+							<Column
+								column={column}
+								columnIndex={columnIndex}
+								key={columnIds[columnIndex]}
+							/>
+						))}
+					</Stack>
+				)}
+			</Droppable>
+		</DragDropContext>
 	);
 };
 

@@ -1,4 +1,5 @@
 import SvgIcon from '@mui/material/SvgIcon';
+import { Draggable } from 'react-beautiful-dnd';
 
 export type PieceType =
 	| 'pawn'
@@ -29,17 +30,30 @@ const viewBoxes: Record<PieceType, string> = {
 };
 
 type Props = {
+	id: string;
+	index: number;
 	type: PieceType;
 	color: ColorType;
 };
 
-const Piece = ({ type, color }: Props) => (
-	<SvgIcon
-		sx={{ height: '64px', width: '64px', fill: color }}
-		viewBox={viewBoxes[type]}
-	>
-		<path d={paths[type]} />
-	</SvgIcon>
+const Piece = ({ id, index, type, color }: Props) => (
+	<Draggable draggableId={id} index={index}>
+		{(provided, snapshot) => (
+			<div
+				id={id}
+				{...provided.draggableProps}
+				{...provided.dragHandleProps}
+				ref={provided.innerRef}
+			>
+				<SvgIcon
+					sx={{ height: '64px', width: '64px', fill: color }}
+					viewBox={viewBoxes[type]}
+				>
+					<path d={paths[type]} />
+				</SvgIcon>
+			</div>
+		)}
+	</Draggable>
 );
 
 export default Piece;
